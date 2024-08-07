@@ -1,0 +1,27 @@
+<div class="w-full flex-col rounded-lg bg-background px-8 py-8 sm:flex-row">
+
+  <div class="relative overflow-x-auto">
+    <table class="w-full table-auto">
+      <!--Table head-->
+      <thead class="text-xs uppercase text-muted-foreground">
+        <tr>
+          <th class="py-3 text-left">ID</th>
+          <th class="py-3 text-left">Email</th>
+          <th class="py-3 text-left">Nome</th>
+          <th class="py-3 text-left">Últino nome</th>
+          <th class="py-3 text-left">Role</th>
+        </tr>
+      </thead>
+      <!--end Table head-->
+      <!--Table body-->
+      <tbody>
+        <tr
+          *ngFor="let auction of users"
+          [auction]="auction"
+          users-auctions-table-item
+          class="border-b border-dashed border-border hover:bg-card"></tr>
+      </tbody>
+      <!--end::Table body-->
+    </table>
+  </div>
+</div>

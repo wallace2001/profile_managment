@@ -1,0 +1,100 @@
+version: '3'
+
+networks:
+    web:
+        driver: bridge
+
+volumes:
+    mariadb:
+        driver: local
+    angular-build:
+
+services:
+    nginx:
+        image: nginx:stable-alpine
+        ports:
+            - '80:80'
+        links:
+            - php:php
+            - angular:angular
+        volumes:
+            - .:/var/www/html
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./docker/nginx/site.conf:/etc/nginx/conf.d/default.conf:rw
+            - angular-build:/var/www/html/public/angular-app
+        depends_on:
+            - php
+            - db
+            - angular
+        networks:
+            - web
+        restart: always
+        tty: true
+
+    db:
+        image: 'mariadb:10'
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: 'your_password'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: 'your_database'
+            MYSQL_USER: 'your_username'
+            MYSQL_PASSWORD: 'your_password'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - 'mariadb:/var/lib/mysql'
+        networks:
+            - web
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
+            retries: 3
+            timeout: 5s
+        restart: unless-stopped
+        tty: true
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - '8080:80'
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: 'your_password'
+        depends_on:
+            - db
+        networks:
+            - web
+        restart: unless-stopped
+        tty: true
+
+    php:
+        build:
+            context: ./docker/php
+            dockerfile: Dockerfile
+        volumes:
+            - .:/var/www/html
+        ports:
+            - '9000:9000'
+        networks:
+            - web
+        depends_on:
+            - db
+        restart: unless-stopped
+        tty: true
+        links:
+            - db:db
+
+    angular:
+        build:
+            context: ./web/angular-tailwind
+            dockerfile: Dockerfile
+        volumes:
+            - angular-build:/app/dist/angular-tailwind
+        ports:
+            - '4200:4200'
+        networks:
+            - web
+        depends_on:
+            - db
+        tty: true
+        restart: unless-stopped

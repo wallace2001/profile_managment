@@ -1,0 +1,6 @@
+<div>
+  <app-loading *ngIf="loadingService.loading$ | async"></app-loading>
+  <router-outlet></router-outlet>
+  <app-responsive-helper></app-responsive-helper>
+  <app-toast *ngIf="toast.visible"></app-toast>
+</div>
