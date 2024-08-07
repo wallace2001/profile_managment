@@ -46,4 +46,4 @@ Este projeto é licenciado sob a [Licença MIT](https://opensource.org/licenses/
 
 ## Contato
 
-Para mais informações ou dúvidas, entre em contato com [seu-email@exemplo.com](mailto:dev_kollen@outlook.com).
+Para mais informações ou dúvidas, entre em contato com [dev_kollen@outlook.com](mailto:dev_kollen@outlook.com).
