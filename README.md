@@ -36,10 +36,14 @@ docker-compose up -d --build
 http://localhost:4200
 ````
 
+![login](https://github.com/wallace2001/profile_managment/blob/master/images/Captura%20de%20tela%202024-08-06%20230414.png?raw=true)
+![users](https://github.com/wallace2001/profile_managment/blob/master/images/Captura%20de%20tela%202024-08-06%20230443.png?raw=true)
+![profile](https://github.com/wallace2001/profile_managment/blob/master/images/Captura%20de%20tela%202024-08-06%20230447.png?raw=true)
+
 ## Licença
 
 Este projeto é licenciado sob a [Licença MIT](https://opensource.org/licenses/MIT).
 
 ## Contato
 
-Para mais informações ou dúvidas, entre em contato com [seu-email@exemplo.com](mailto:dev_kollen@outlook.com).
+Para mais informações ou dúvidas, entre em contato com [dev_kollen@outlook.com](mailto:dev_kollen@outlook.com).
