@@ -24,7 +24,8 @@ import { AuthService } from 'src/app/core/services/auth.service';
 export class UsersComponent implements OnInit {
   public activeAuction: UserFormatted[] = [];
 
-  constructor(private loadingService: LoadingService, private userService: UserService, private authService: AuthService) {
+  constructor(private loadingService: LoadingService, private userService: UserService) {
+    this.userService.loadUsers();
   }
 
   ngOnInit(): void {

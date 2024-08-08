@@ -15,12 +15,9 @@
 </td>
 <td class="py-2 text-left">
   <div class="flex justify-end">
-    <app-button (click)="openModal()" class="pl-2" full [loading]="loadingButton" impact="bold" tone="light" shape="rounded" size="medium">
+    <app-button (click)="openModal(auction)" class="pl-2" full [loading]="loadingButton" impact="bold" tone="light" shape="rounded" size="medium">
       <svg-icon src="assets/icons/heroicons/solid/pencil.svg" [svgClass]="'h-3 w-3'"> </svg-icon>
     </app-button>
-    <app-modal [user]="auction">
-      
-    </app-modal>
     <app-button (click)="openModalConfirmation(auction.id)" class="pl-2" full [loading]="loadingButton" impact="bold" tone="primary" shape="rounded" size="medium">
       <svg-icon src="assets/icons/heroicons/solid/trash.svg" [svgClass]="'h-3 w-3'"> </svg-icon>
     </app-button>

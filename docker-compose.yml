@@ -91,7 +91,7 @@ services:
         volumes:
             - angular-build:/app/dist/angular-tailwind
         ports:
-            - '4200:4200'
+            - '4201:4200'
         networks:
             - web
         depends_on:

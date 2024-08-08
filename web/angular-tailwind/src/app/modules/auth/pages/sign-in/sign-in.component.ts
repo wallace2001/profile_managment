@@ -6,6 +6,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { LoginService } from 'src/app/core/services/login.service';
 import { MenuService } from 'src/app/modules/layout/services/menu.service';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -26,10 +27,14 @@ export class SignInComponent implements OnInit {
 
   constructor(
     private readonly _formBuilder: FormBuilder, 
-    private readonly _router: Router, 
+    private _router: Router, 
     private loginService: LoginService,
-    private menuService: MenuService
-  ) {}
+    private menuService: MenuService,
+  ) {
+    if (localStorage.getItem('auth-token')) {
+      this._router.navigate(['/dashboard/home']);
+    }
+  }
 
   ngOnInit(): void {
     this.form = this._formBuilder.group({
@@ -54,11 +59,12 @@ export class SignInComponent implements OnInit {
     this.loginService.login(email, password).subscribe({
       next: (response) => {
         this.menuService.setUserRole(response.user.role.name);
+        localStorage.setItem("auth-token", response.access_token);
+        localStorage.setItem("username", response.user.name);
       },
       complete: () => {
         this.loading = false;
         this.errorLogin = false;
-        this._router.navigate(['/dashboard/home']);
       },
       error: (err) => {
         this.loading = false;

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ModalService } from 'src/app/core/services/modal.service';
 import { ModalPageComponent } from 'src/app/modules/layout/components/modal/modal-page.component';
 
 @Component({
@@ -8,9 +9,7 @@ import { ModalPageComponent } from 'src/app/modules/layout/components/modal/moda
     standalone: true,
 })
 export class UsersHeaderComponent implements OnInit {
-  @ViewChild(ModalPageComponent)
-  modal!: ModalPageComponent;
-  constructor() {}
+  constructor(public modalService: ModalService) {}
 
   ngOnInit(): void {}
 }

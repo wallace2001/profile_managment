@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { ModalPageComponent } from "../../../../layout/components/modal/modal-page.component";
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { ModalConfirmationComponent } from 'src/app/modules/layout/components/modal-confirmation/modal-confirmation.component';
+import { ModalService } from 'src/app/core/services/modal.service';
 
 @Component({
     selector: '[users-auctions-table-item]',
@@ -20,18 +21,18 @@ import { ModalConfirmationComponent } from 'src/app/modules/layout/components/mo
 export class UsersAuctionsTableItemComponent implements OnInit {
   public loadingButton: boolean = false;
   @Input() auction = <UserFormatted>{};
-  @ViewChild(ModalPageComponent) modal!: ModalPageComponent;
   @ViewChild(ModalConfirmationComponent) modalConfirmation!: ModalConfirmationComponent;
 
-  constructor() {}
+  constructor(private modalService: ModalService) {}
 
   ngOnInit(): void {}
 
   ngAfterViewInit() {
   }
 
-  openModal() {
-    this.modal.openModal();
+  openModal(user: UserFormatted) {
+    this.modalService.openModal();
+    this.modalService.setUserEdited(user);
   }
 
   openModalConfirmation(id: number | null) {

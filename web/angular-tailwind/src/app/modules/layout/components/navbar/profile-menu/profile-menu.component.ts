@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule, NgClass } from '@angular/common';
 import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -9,13 +9,15 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { User, UserFormatted } from 'src/app/types/user-response';
 import { LoadingService } from '../../../services/loading.service';
 import { catchError, tap } from 'rxjs';
+import { ModalPageComponent } from '../../modal/modal-page.component';
+import { ModalService } from 'src/app/core/services/modal.service';
 
 @Component({
   selector: 'app-profile-menu',
   templateUrl: './profile-menu.component.html',
   styleUrls: ['./profile-menu.component.scss'],
   standalone: true,
-  imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, CommonModule],
+  imports: [ClickOutsideDirective, NgClass, RouterLink, AngularSvgIconModule, ModalPageComponent, CommonModule],
   providers: [AuthService],
   animations: [
     trigger('openClose', [
@@ -58,10 +60,18 @@ export class ProfileMenuComponent implements OnInit {
   };
   public profileMenu = [
     {
+      title: 'Perfil',
+      icon: './assets/icons/heroicons/outline/users.svg',
+      onclick: (user: UserFormatted) => {
+        this.modalService.setMyUser(user);
+        this.modalService.openModal();
+      }
+    },
+    {
       title: 'Log out',
       icon: './assets/icons/heroicons/outline/logout.svg',
-      link: '/auth',
       onclick: () => {
+        this.router.navigate(['/auth/sign-in']);
         this.authService.logout();
       }
     },
@@ -100,7 +110,7 @@ export class ProfileMenuComponent implements OnInit {
 
   public themeMode = ['light', 'dark'];
 
-  constructor(public themeService: ThemeService, private authService: AuthService, private loadingService: LoadingService) {}
+  constructor(public themeService: ThemeService, private router: Router, private authService: AuthService, private loadingService: LoadingService, private modalService: ModalService) {}
 
   ngOnInit(): void {
     this.loadingService.setLoading(true);

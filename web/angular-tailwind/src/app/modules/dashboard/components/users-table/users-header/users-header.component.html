@@ -8,10 +8,9 @@
   </div>
   <div class="inline-block space-x-4">
     <!-- Modal toggle -->
-    <button (click)="this.modal.openModal()" class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground" type="button">
+    <button (click)="this.modalService.openModal(true)" class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground" type="button">
         Adicionar Usuário
     </button>
-    <app-modal></app-modal>
     <!-- <button class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground">
       Adicionar usuário
     </button> -->

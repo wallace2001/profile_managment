@@ -122,6 +122,7 @@ export class AuthService {
   }
 
   getRoles() {
+    if (!this.authToken) return;
     this.httpClient.get<{roles: Role[]}>(`${this.apiUrl}/roles`, {
       headers: {
         'Authorization': `Bearer ${this.authToken}`
@@ -154,8 +155,8 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('auth-token');
-    this.router.navigate(['/auth']);
     this.menuService.setUserRole('');
+    this.router.navigate(['/auth/sign-in']);
   }
 
 }

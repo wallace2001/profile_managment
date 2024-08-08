@@ -9,12 +9,15 @@ import { LoadingService } from './modules/layout/services/loading.service';
 import { initFlowbite } from 'flowbite';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { IToastStatus, ToastService } from './core/services/toast.service';
+import { ModalPageComponent } from './modules/layout/components/modal/modal-page.component';
+import { UserService } from './core/services/user.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
   imports: [NgClass, NgIf, RouterOutlet, ResponsiveHelperComponent, CommonModule, HttpClientModule, ToastComponent, LoadingComponent],
+  providers: [UserService]
 })
 export class AppComponent implements OnInit {
   title = 'My App';

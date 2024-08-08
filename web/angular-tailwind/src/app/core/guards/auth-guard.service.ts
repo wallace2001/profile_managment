@@ -2,29 +2,26 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { catchError, map, Observable, of } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, private userService: UserService) {
+    this.userService.loadUser();
+  }
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const authToken = localStorage.getItem('auth-token');
-
-    if (!authToken) {
-      return this.router.navigate(['/auth']);
-    }
-
-    return this.authService.getUser(authToken).pipe(
+    return this.userService.user$.pipe(
       map(response => {
-        const roles = response.user.roles;
-        if (roles[0].name.includes('admin')) {
+        const roles = response.role;
+        if (roles.name.includes('admin')) {
           return true;
-        } else if (roles[0].name.includes('user')) {
+        } else if (roles.name.includes('user')) {
           this.router.navigate(['/dashboard/home']);
           return true;
         } else {
@@ -35,6 +32,6 @@ export class AuthGuard implements CanActivate {
       catchError(() => {
         return of(this.router.createUrlTree(['/auth']));
       })
-    )
+    );
   }
 }

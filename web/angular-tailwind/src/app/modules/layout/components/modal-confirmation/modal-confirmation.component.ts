@@ -73,7 +73,7 @@ export class ModalConfirmationComponent implements OnInit, AfterViewInit  {
 
   onClick() {
     if (this.user.id) {
-      this.userService.deleteUser(this.user.id, () => this.onCloseModal());
+      this.userService.deleteUser(this.user.id);
     }
   }
 

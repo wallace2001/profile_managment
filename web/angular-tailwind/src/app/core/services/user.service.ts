@@ -1,25 +1,66 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth.service';
-import { User, UserFormatted, UserRequest } from 'src/app/types/user-response';
+import { UserFormatted, UserRequest } from 'src/app/types/user-response';
 import { ToastService } from './toast.service';
+import { ModalService } from './modal.service';
+import { Router } from '@angular/router';
+import { LoadingService } from 'src/app/modules/layout/services/loading.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private usersSubject = new BehaviorSubject<UserFormatted[]>([]);
+  private userSubject = new BehaviorSubject<UserFormatted | any>({});
   private loadingSubject = new BehaviorSubject<boolean>(false);
   users$ = this.usersSubject.asObservable();
+  user$ = this.userSubject.asObservable();
   loading$ = this.loadingSubject.asObservable();
   private authToken: any;
 
-  constructor(private authService: AuthService, private toastService: ToastService) {
-    this.loadUsers();
+  constructor(private authService: AuthService, private router: Router, private loadingService: LoadingService, private toastService: ToastService, private modalService: ModalService) {
     this.authToken = localStorage.getItem('auth-token');
+    this.loadUsers();
+    this.loadUser();
+  }
+
+  setUser(user: UserFormatted) {
+    this.userSubject.next(user);
+  }
+
+  loadUser() {
+    if (!this.authToken) return;
+    this.loadingService.setLoading(true);
+    this.authService.getUser(this.authToken).subscribe({
+      next: (data) => {
+        this.userSubject.next({
+          name: data.user.name,
+          email: data.user.email,
+          id: data.user.id,
+          lastName: data.user.last_name,
+          role: data.user?.roles[0] || { id: 0, name: '' },
+        });
+      },
+      complete: () => {
+        this.user$.subscribe(() => {
+          this.router.navigate(['/dashboard/home']);
+          this.loadingService.setLoading(false);
+        })
+      },
+      error: (err) => {
+        this.toastService.openToast(
+          "Erro ao buscar perfil",
+          'toast-danger'
+        );
+        localStorage.removeItem('auth-token');
+        this.loadingService.setLoading(false);
+      },
+    });
   }
 
   loadUsers() {
+    if (!this.authToken) return;
     this.authService.getUsers(this.authToken).subscribe({
       next: (data) => {
         const users = data.users.map(user => ({
@@ -57,12 +98,13 @@ export class UserService {
         complete: () => {
             const currentUsers = this.usersSubject.value;
             this.usersSubject.next([...currentUsers, newUser]);
-            onCloseModal();
+            this.modalService.closeModal();
             this.loadingSubject.next(false);
             this.toastService.openToast(
               "Usuário criado com sucesso!",
               "toast-success"
             );
+            onCloseModal();
         },
         error: (err) => {
             this.loadingSubject.next(false);
@@ -94,11 +136,12 @@ export class UserService {
             );
             this.usersSubject.next(currentUsers);
             this.loadingSubject.next(false);
-            onCloseModal();
+            this.modalService.closeModal();
             this.toastService.openToast(
               "Usuário atualizado com sucesso!",
               "toast-success"
             );
+            onCloseModal();
         },
         error: () => {
           this.loadingSubject.next(false);
@@ -110,7 +153,7 @@ export class UserService {
       });
   }
 
-  deleteUser(userId: number, onCloseModal: () => void) {
+  deleteUser(userId: number) {
     this.loadingSubject.next(true);
     this.authService.deleteUser(userId).subscribe({
         complete: () => {
@@ -121,7 +164,7 @@ export class UserService {
               "Usuário deletado com sucesso!",
               "toast-success"
             );
-            onCloseModal();
+            this.modalService.closeModal();
         },
         error: () => {
             this.loadingSubject.next(false);
@@ -129,7 +172,7 @@ export class UserService {
               "Erro ao deletar usuário",
               "toast-danger"
             );
-            onCloseModal();
+            this.modalService.closeModal();
         }
     });
 
